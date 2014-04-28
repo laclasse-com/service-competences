@@ -1,0 +1,28 @@
+<?php
+/**
+ * @author Pierre-Gilles Levallois <pgl@erasme.org>
+ * 
+ * ****************************************************************************************************
+ * Intrégration de SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * dans Laclasse.com version 3 <http://www.laclasse.com/v3/>
+ * Provisionning des établissements et des comptes en mode api.
+ * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+ * ****************************************************************************************************
+ *
+ */
+
+// Fichier de configuration du mode api
+define('SERVEUR_ENT', 'www.dev.laclasse.com');
+define('ANNUAIRE_ENT_API_USER', SERVEUR_ENT.'/api/users/');
+define('ANNUAIRE_ENT_API_ETAB', SERVEUR_ENT.'/api/etablissement/');
+define('ANNUAIRE_ENT_API_APPLI', SERVEUR_ENT.'/api/application/');
+define('ANNUAIRE_ENT_API_KEY', 'Ici un clé pour signer les requeste envoyées à l\'annuaire ent');
+
+$conf_cas = array(
+  'cas_serveur_host'      => SERVEUR_ENT,
+  'cas_serveur_port'      => '443',
+  'cas_serveur_root'      => 'sso-mysql',
+  'connexion_nom'         => 'laclasse',
+  'connexion_departement' => '69',
+  'connexion_mode'        => 'cas'
+);
