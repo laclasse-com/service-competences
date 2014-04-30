@@ -25,7 +25,6 @@
  * ***************************************************************************************************
  */
 // Variables globales
-$etape = 0;
 $uai = strtoupper($_REQUEST['uai']);
 
 // Montrer les erreurs : a commenter si on n'est pas en developpement
@@ -38,17 +37,14 @@ error_reporting(-1);
  */
 
 function p($s) {
-  echo $s . "<br/>";
+  echo htmlentities($s) . "<br/>";
 }
 
 function setEtape($n) {
   $etape = $n;
 }
-function json_exit($code, $msg) {
-  echo json_encode(array("status" => array($code => $msg)));
-}
 
-/******************************************************************************************************/
+/* * *************************************************************************************************** */
 // Charger la configuration
 require('config.api.inc.php');
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
@@ -67,20 +63,17 @@ Session::execute();
 //Fonctions diverses de SACoche
 require(CHEMIN_DOSSIER_INCLUDE . 'fonction_divers.php');
 
-/******************************************************************************************************/
-setEtape(0);
+/* * *************************************************************************************************** */
+// MAIN LOOP
+/* * *************************************************************************************************** */
 
-if ($etape == '0' ) {
-  if (non_nul($uai)) {  
-    if ( tester_UAI($uai)) {
-      p("Création établissement...");    
-      exit_json(200, "OK");
-    }
-    else {
-      exit_json(400, "La valeur du paramètre uai est incorrecte.");
-    }
-  } 
-  else {
-    exit_json(400, "Le paramètre uai est manquant.");
+if (non_nul($uai)) {
+  if (tester_UAI($uai)) {
+    p("Création établissement...");
+    exit_json(200, "OK");
+  } else {
+    exit_json(400, "La valeur du paramètre uai est incorrecte.");
   }
+} else {
+  exit_json(400, "Le paramètre uai est manquant.");
 }
