@@ -24,30 +24,14 @@
  * 
  * ***************************************************************************************************
  */
-// Montrer les erreurs 
+// Variables globales
+$etape = 0;
+$uai = strtoupper($_REQUEST['uai']);
+
+// Montrer les erreurs : a commenter si on n'est pas en developpement
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
-
-// Charger la configuration
-require('config.api.inc.php');
-// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
-require('./sacoche/_inc/_loader.php');
-// Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
-require(CHEMIN_FICHIER_CONFIG_INSTALL);
-
-// Ouverture de la session et gestion des droits d'accès
-// Dire à SACoche qu'on est sur la page 'webservices' : ses droits sont publics, 
-// et le fichier des droits n'est pas patchable car il est requis juste avant la vérif.
-if (!Session::verif_droit_acces('webservices')) {
-  exit_error('Droits manquants' /* titre */, 'Droits de la page "' . SACoche . '" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "' . FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE . 'tableau_droits.php') . '".' /* contenu */, '' /* lien */);
-}
-Session::execute();
-
-/*
- *  Fonctions diverses de SACoche
- */
-require(CHEMIN_DOSSIER_INCLUDE . 'fonction_divers.php');
 
 /*
  * Fonctions diverses et variées des API
@@ -60,15 +44,43 @@ function p($s) {
 function setEtape($n) {
   $etape = $n;
 }
-/******************************************************************************************************/
+function json_exit($code, $msg) {
+  echo json_encode(array("status" => array($code => $msg)));
+}
 
+/******************************************************************************************************/
+// Charger la configuration
+require('config.api.inc.php');
+// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
+require('./sacoche/_inc/_loader.php');
+// Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
+require(CHEMIN_FICHIER_CONFIG_INSTALL);
+
+// Ouverture de la session et gestion des droits d'accès
+// Dire à SACoche qu'on est sur la page 'webservices' : ses droits sont publics, 
+// et le fichier des droits n'est pas patchable car il est requis juste avant la vérif.
+if (!Session::verif_droit_acces('webservices')) {
+  exit_json(400, 'Droits de la page "' . SACoche . '" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "' . FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE . 'tableau_droits.php'));
+}
+Session::execute();
+
+//Fonctions diverses de SACoche
+require(CHEMIN_DOSSIER_INCLUDE . 'fonction_divers.php');
+
+/******************************************************************************************************/
 setEtape(0);
 
 if ($etape == '0' ) {
-  if (non_nul($_REQUEST['uai']) && tester_UAI($_REQUEST['uai'])) {
-    p("Création établissement...");
+  if (non_nul($uai)) {  
+    if ( tester_UAI($uai)) {
+      p("Création établissement...");    
+      exit_json(200, "OK");
+    }
+    else {
+      exit_json(400, "La valeur du paramètre uai est incorrecte.");
+    }
+  } 
+  else {
+    exit_json(400, "Le paramètre uai est manquant.");
   }
 }
-
-
-p("Fin.");
