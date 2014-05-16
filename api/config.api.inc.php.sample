@@ -13,10 +13,11 @@
 
 // Fichier de configuration du mode api
 define('SERVEUR_ENT', 'www.dev.laclasse.com');
-define('ANNUAIRE_ENT_API_USER', SERVEUR_ENT.'/api/users/');
-define('ANNUAIRE_ENT_API_ETAB', SERVEUR_ENT.'/api/etablissement/');
-define('ANNUAIRE_ENT_API_APPLI', SERVEUR_ENT.'/api/application/');
-define('ANNUAIRE_ENT_API_KEY', 'Ici un clé pour signer les requeste envoyées à l\'annuaire ent');
+define('ANNUAIRE_ENT_API_USER',  'http://'. SERVEUR_ENT.'/api/users/');
+define('ANNUAIRE_ENT_API_ETAB',  'http://'. SERVEUR_ENT.'/api/etablissements/');
+define('ANNUAIRE_ENT_API_APPLI', 'http://'. SERVEUR_ENT.'/api/application/');
+define('ANNUAIRE_ENT_APP_ID',    'Identifiant de l\'application SACoche dans l\'annuaire ent');
+define('ANNUAIRE_ENT_API_KEY',   'Ici un clé pour signer les requeste envoyées à l\'annuaire ent');
 
 $conf_cas = array(
   'cas_serveur_host'      => SERVEUR_ENT,
