@@ -57,7 +57,9 @@ function generer_appel($url, $params) {
   // 5. Calcul de la signature : sha1 et Encodage Base64
   $signature = "signature=".urlencode(base64_encode(hash_hmac('sha1', $canonical_string, ANNUAIRE_ENT_API_KEY, true)));
   // Renvoie de la requete constituée
-  return $url . "?" .  $query_string . ";app_id=" . $app_id . ";timestamp=" . urlencode($timestamp) . ";" . $signature;
+  $req = $url . "?" .  $query_string . ";app_id=" . $app_id . ";timestamp=" . urlencode($timestamp) . ";" . $signature;
+  p($req);
+  return $req;
 }
 
 /*
@@ -66,10 +68,8 @@ function generer_appel($url, $params) {
 function interroger_annuaire_ENT($url_api, $params) {
     $url = generer_appel($url_api, $params);
 	$ch = curl_init();
-    p("url=$url");
 	curl_setopt($ch, CURLOPT_URL, $url);
-    //$url = curl_unescape ($ch , $url);
-    //curl_setopt($ch, CURLOPT_ENCODING ,"");
+    curl_setopt($ch, CURLOPT_ENCODING ,"");
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	$data = curl_exec($ch);
@@ -106,12 +106,13 @@ require(CHEMIN_DOSSIER_INCLUDE . 'fonction_divers.php');
 /* * *************************************************************************************************** */
 // MAIN LOOP
 /* * *************************************************************************************************** */
-echo (urldecode("http://www.laclasse.com/pls/public/!ajax_server.service?serviceName=serviceApiUser&uid=VBG64417&expand=true;app_id=DOC;timestamp=2014-04-30T14%3A32%3A04;signature=0QGAe497jHhxhCgSrAnVrdcY2Tw%3D%0A"));
 if (non_nul($uai)) {
   if (tester_UAI($uai)) {
     p("Création établissement...");
-    //$r = interroger_annuaire_ENT(ANNUAIRE_ENT_API_ETAB.$uai, array("expand" => "true") );
-    include(CHEMIN_DOSSIER_PAGES . 'webmestre_structure_gestion.ajax.php');
+    
+    $r = interroger_annuaire_ENT(ANNUAIRE_ENT_API_ETAB.$uai, array("expand" => "true") );
+    print_r($r);
+    //include(CHEMIN_DOSSIER_PAGES . 'webmestre_structure_gestion.ajax.php');
     
     exit_json(200, "OK");
   } else {
