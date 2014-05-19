@@ -24,10 +24,16 @@
  * 
  * ***************************************************************************************************
  */
+
+/* * *************************************************************************************************** */
+/* Charger la configuration                                                                              */
+/* * *************************************************************************************************** */
+require('config.api.inc.php');
+
 // Variables globales
 $uai = strtoupper($_REQUEST['uai']);
 
-// Montrer les erreurs : a commenter si on n'est pas en developpement
+// Montrer les erreurs : à commenter si on n'est pas en developpement
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -41,7 +47,8 @@ function p($s) {
 }
 
 function generer_appel($url, $params) {
-  $canonical_string.= $url."?";
+  $canonical_string = $url."?";
+  $query_string = "";
   // 1. trier les paramètres
   ksort($params);
   // 2. construction de la canonical string
@@ -79,29 +86,6 @@ function interroger_annuaire_ENT($url_api, $params) {
 	curl_close($ch);
 	return $data;
 }
-
-
-/* * *************************************************************************************************** */
-// Charger la configuration
-require('config.api.inc.php');
-// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
-require('../sacoche/_inc/_loader.php');
-// Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
-require(CHEMIN_FICHIER_CONFIG_INSTALL);
-
-// Ouverture de la session et gestion des droits d'accès
-// Dire à SACoche qu'on est sur la page 'webservices' : ses droits sont publics, 
-// et le fichier des droits n'est pas surchargeable car il est requis juste avant la vérif.
-// 
-// Je laisse à Thomas Crespin la charge de modifier les matrices de droits pour ajouter "api", 
-// s'il juge utile d'intégrer ce module d'API dans le core de SACoche.
-if (!Session::verif_droit_acces('webservices')) {
-  exit_json(400, 'Droits de la page "' . SACoche . '" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "' . FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE . 'tableau_droits.php'));
-}
-Session::execute();
-
-//Fonctions diverses de SACoche
-require(CHEMIN_DOSSIER_INCLUDE . 'fonction_divers.php');
 
 /* * *************************************************************************************************** */
 // MAIN LOOP
