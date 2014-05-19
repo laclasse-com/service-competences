@@ -40,25 +40,6 @@ function p($s) {
   echo htmlentities($s) . "<br/>";
 }
 
-function setEtape($n) {
-  $etape = $n;
-}
-
-function build_string($a, $sep = ";") {
-  $q = "";
-  $first = true;
-  foreach ($a as $k => $v) {
-    //$v = urlencode($v);
-    if ($first) {
-      $q .= $k . "=" . $v;
-      $first = false;
-    } else {
-      $q .= $sep . $k . "=" . $v;
-    }
-  }
-  return $q;
-}
-
 function generer_appel($url, $params) {
   // 1. trier les paramètres
   ksort($params);
@@ -111,7 +92,7 @@ require(CHEMIN_FICHIER_CONFIG_INSTALL);
 // Dire à SACoche qu'on est sur la page 'webservices' : ses droits sont publics, 
 // et le fichier des droits n'est pas surchargeable car il est requis juste avant la vérif.
 // 
-// On peut laisser à Thomas Crespin la charge de modifier les matrices de droits, 
+// Je laisse à Thomas Crespin la charge de modifier les matrices de droits pour ajouter "api", 
 // s'il juge utile d'intégrer ce module d'API dans le core de SACoche.
 if (!Session::verif_droit_acces('webservices')) {
   exit_json(400, 'Droits de la page "' . SACoche . '" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "' . FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE . 'tableau_droits.php'));
@@ -128,8 +109,9 @@ echo (urldecode("http://www.laclasse.com/pls/public/!ajax_server.service?service
 if (non_nul($uai)) {
   if (tester_UAI($uai)) {
     p("Création établissement...");
-    $r = interroger_annuaire_ENT(ANNUAIRE_ENT_API_ETAB.$uai, array("expand" => "true") );
-    print_r($r);
+    //$r = interroger_annuaire_ENT(ANNUAIRE_ENT_API_ETAB.$uai, array("expand" => "true") );
+    include(CHEMIN_DOSSIER_PAGES . 'webmestre_structure_gestion.ajax.php');
+    
     exit_json(200, "OK");
   } else {
     exit_json(400, "La valeur du paramètre uai est incorrecte.");
