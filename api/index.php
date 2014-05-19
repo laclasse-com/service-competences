@@ -41,22 +41,23 @@ function p($s) {
 }
 
 function generer_appel($url, $params) {
+  $canonical_string.= $url."?";
   // 1. trier les paramètres
   ksort($params);
   // 2. construction de la canonical string
-  foreach ($params as $k => $v) $canonical_string .= $k."=".$v."&";
-  $canonical_string = trim($canonical_string, "&");
-  $query_string = $canonical_string;
+  foreach ($params as $k => $v) $query_string .= $k."=".urlencode ($v)."&";
+  $query_string = trim($query_string, "&");
+  $canonical_string.= $query_string;
   // 3. ajout du timestamp
-  $timestamp = "timestamp=".  date("Y-m-d\TH:i:s");
-  $canonical_string .= ";".$ts; 
+  $timestamp = date("Y-m-d\TH:i:s");
+  $canonical_string .= ";".$timestamp;
   //4. Ajout de l'identifiant d'application (connu de l'annuaire, et qui lu permet de comprendre la signature)
-  $app_id = "app_id=".ANNUAIRE_ENT_APP_ID;
+  $app_id = ANNUAIRE_ENT_APP_ID;
   $canonical_string .= ";".$app_id; 
   // 5. Calcul de la signature : sha1 et Encodage Base64
-  $signature = "signature=".base64_encode(sha1(ANNUAIRE_ENT_API_KEY . ';' . $canonical_string));
+  $signature = "signature=".urlencode(base64_encode(hash_hmac('sha1', $canonical_string, ANNUAIRE_ENT_API_KEY, true)));
   // Renvoie de la requete constituée
-  return $url . "?" .  $query_string . ";" . $app_id . ";" . $timestamp . ";" . $signature;
+  return $url . "?" .  $query_string . ";app_id=" . $app_id . ";timestamp=" . urlencode($timestamp) . ";" . $signature;
 }
 
 /*
