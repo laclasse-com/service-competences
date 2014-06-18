@@ -1,5 +1,1 @@
-vagrant/
-!/sacoche/api
-sacoche/
-.vagrant/
 config.*.php
