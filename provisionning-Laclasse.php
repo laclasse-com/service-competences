@@ -93,11 +93,13 @@ function interroger_annuaire_ENT($url_api, $params) {
 if (non_nul($uai)) {
   if (tester_UAI($uai)) {
     p("Création établissement...");
-    
     $r = interroger_annuaire_ENT(ANNUAIRE_ENT_API_ETAB.$uai, array("expand" => "true") );
     print_r($r);
-    //include(CHEMIN_DOSSIER_PAGES . 'webmestre_structure_gestion.ajax.php');
     
+    p('création des élèves');
+    p('création des profs');
+    p('etc...etc...');
+
     exit_json(200, "OK");
   } else {
     exit_json(400, "La valeur du paramètre uai est incorrecte.");
